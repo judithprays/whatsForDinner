@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>what's for dinner?</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="wordmark" href="#" aria-label="What's for dinner home">what's for dinner<span>?</span></a>
+    <nav id="top-nav" aria-label="Main navigation" hidden>
+      <button class="nav-link active" data-view="week">This week</button>
+      <button class="nav-link" data-view="recipes">My recipes</button>
+      <button class="nav-link" data-view="shopping">Shopping list</button>
+      <button class="nav-link" data-view="history">Past menus</button>
+    </nav>
+    <div class="header-account">
+      <span id="user-label"></span>
+      <button id="sign-out" class="text-button" hidden>Sign out</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="auth-view" class="auth-layout">
+      <p class="eyebrow">A LITTLE LESS WHAT'S FOR DINNER?</p>
+      <h1>Good dinners start<br>with a little plan.</h1>
+      <p class="intro">Keep your favorite meals, plan the week, and make the shopping list.</p>
+      <form id="auth-form" class="auth-form">
+        <label>Email <input id="auth-email" type="email" autocomplete="email" required></label>
+        <label>Password <input id="auth-password" type="password" autocomplete="current-password" minlength="6" required></label>
+        <div class="button-row">
+          <button class="button primary" type="submit" id="sign-in-button">Sign in</button>
+          <button class="button secondary" type="button" id="sign-up-button">Create account</button>
+        </div>
+        <p id="auth-message" class="message" role="status"></p>
+      </form>
+    </section>
+
+    <section id="app-view" hidden>
+      <div class="page-heading">
+        <div>
+          <p class="eyebrow" id="page-eyebrow">YOUR PLAN</p>
+          <h1 id="page-title">This week</h1>
+        </div>
+        <p id="week-range" class="muted"></p>
+      </div>
+
+      <section id="view-week" class="app-panel">
+        <div class="section-intro">
+          <p>Seven days. Dinner handled.</p>
+          <button id="previous-week" class="button secondary small">← Previous</button>
+          <button id="next-week" class="button secondary small">Next →</button>
+        </div>
+        <div id="week-grid" class="week-grid"></div>
+        <div class="panel-footer">
+          <button id="save-menu" class="button primary">Save this week's menu</button>
+          <button id="make-shopping-list" class="button secondary">Build shopping list</button>
+        </div>
+        <p id="week-message" class="message" role="status"></p>
+      </section>
+
+      <section id="view-recipes" class="app-panel" hidden>
+        <div class="section-intro">
+          <p>Your personal collection of dinners.</p>
+          <button id="show-recipe-form" class="button primary">+ Add a dinner</button>
+        </div>
+        <form id="recipe-form" class="recipe-form" hidden>
+          <input id="recipe-id" type="hidden">
+          <div class="form-grid">
+            <label>Dinner name <input id="recipe-name" required maxlength="120" placeholder="Roasted salmon and potatoes"></label>
+            <label>Photo URL <input id="recipe-photo" type="url" placeholder="Optional image link"></label>
+            <label>Prep + cook time (minutes) <input id="recipe-time" type="number" min="0" step="5" placeholder="45"></label>
+            <label>Cost (1 = low, 5 = high) <input id="recipe-cost" type="number" min="1" max="5" placeholder="3"></label>
+            <label>Healthfulness (1–5) <input id="recipe-health" type="number" min="1" max="5" placeholder="3"></label>
+            <label>Deliciousness (1–5) <input id="recipe-delicious" type="number" min="1" max="5" placeholder="5"></label>
+          </div>
+          <label>Ingredients <span class="hint">One ingredient per line; include quantity when you know it.</span>
+            <textarea id="recipe-ingredients" rows="5" required placeholder="1 lb salmon&#10;1.5 lb potatoes&#10;1 lemon"></textarea>
+          </label>
+          <label>Recipe / notes <textarea id="recipe-instructions" rows="5" placeholder="Instructions, source, or notes"></textarea></label>
+          <label class="checkbox-label"><input id="recipe-to-try" type="checkbox"> Add to Recipes to Try</label>
+          <div class="button-row">
+            <button class="button primary" type="submit">Save dinner</button>
+            <button class="button secondary" type="button" id="cancel-recipe">Cancel</button>
+          </div>
+          <p id="recipe-message" class="message" role="status"></p>
+        </form>
+        <div class="filter-row">
+          <input id="recipe-search" type="search" placeholder="Search dinners or ingredients">
+          <label class="inline-label">Show
+            <select id="recipe-filter"><option value="all">All dinners</option><option value="try">Recipes to try</option><option value="made">Tried / saved</option></select>
+          </label>
+        </div>
+        <div id="recipe-list" class="recipe-list"></div>
+      </section>
+
+      <section id="view-shopping" class="app-panel" hidden>
+        <div class="section-intro">
+          <p>Everything you need, in one place.</p>
+          <div class="button-row">
+            <button id="refresh-shopping" class="button secondary small">Refresh from menu</button>
+            <button id="print-shopping" class="button primary small">Print what I need</button>
+          </div>
+        </div>
+        <p class="muted small-copy">Check off anything you already have. Checked items won't appear on the printed list.</p>
+        <div id="shopping-list" class="shopping-list"></div>
+        <p id="shopping-message" class="message" role="status"></p>
+      </section>
+
+      <section id="view-history" class="app-panel" hidden>
+        <p class="muted">Your saved weekly menus, by week. Keep a record of seasonal favorites for next year.</p>
+        <div id="history-list" class="history-list"></div>
+      </section>
+    </section>
+    <div id="global-message" class="global-message" role="status"></div>
+  </main>
+  <footer><span>Made for the everyday question.</span><span>What's for dinner?</span></footer>
+</body>
+</html>
